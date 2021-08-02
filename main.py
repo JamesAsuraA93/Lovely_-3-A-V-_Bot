@@ -131,4 +131,4 @@ class MyClient(discord.Client):
 
 
 client = MyClient()
-client.run('ODcxMzQ1MDcyMzk2OTg0MzMx.YQZ9Vg.Av5X4s1Yft7NK2s0QRdVBimWSI0')
+client.run('token')
