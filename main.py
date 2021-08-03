@@ -1,6 +1,9 @@
+import os
 import discord
 import json
 from replit import db
+import keep_alive
+
 
 keys = db.keys()
 if "vote" not in keys or "textCh" not in keys or "userID" not in keys:
@@ -68,6 +71,7 @@ class MyClient(discord.Client):
                 command_list["callback"]: missyou,
                 command_list["result"]: result,
                 command_list["reset"]: reset,
+                command_list["clear"]: clearroom,
                 command_list["list_of_command"]: list_command
             }
             return switcher.get(command, whatthefuq)
@@ -79,8 +83,13 @@ class MyClient(discord.Client):
 
         async def reset():
             db["vote"] = {"vote1": 0, "vote2": 0}
-            db["textCh"] = 0
+            # db["textCh"] = 0
             await message.channel.send(bam_message["reset_already"])
+        
+        async def clearroom():
+            db["vote"] = {"vote1": 0, "vote2": 0}
+            db["textCh"] = 0
+            await message.channel.send(bam_message["clear_room"])
 
         async def vote1():
             if authorId in db["userID"]:
@@ -112,7 +121,8 @@ class MyClient(discord.Client):
 
         async def result():
             print("Result")
-            result = [db["vote"]["vote1"], db["vote"]["vote2"], db["userID"]]
+            result = [db["vote"]["vote1"], db["vote"]["vote2"]]
+            print(db["userID"])
             await message.channel.send(result)
 
         def done_voting():
@@ -130,5 +140,12 @@ class MyClient(discord.Client):
         await switch_fn()
 
 
-client = MyClient()
-client.run('token')
+keep_alive.keep_alive()
+secret_token = os.getenv("TOKEN")
+if secret_token:
+  print("The secret TOKEN is:", secret_token)
+  client = MyClient().run(secret_token)
+else:
+  print("Looks like you're not the owner")
+
+
