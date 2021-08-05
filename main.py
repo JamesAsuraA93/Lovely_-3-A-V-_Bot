@@ -39,7 +39,14 @@ class MyClient(discord.Client):
         if prefix != config["prefix"]:
             print("wrong prefix")
             return
-
+        
+        if command[0] == command_list["create"]:
+            channel = await message.guild.create_text_channel(
+                config["channel_name"], )
+            db["textCh"] = channel.id
+            await message.channel.send(bam_message["create_room"].format(
+                config["channel_name"]))
+            return
         if command[0] == command_list["setup"]:
             print("setup")
             if db["textCh"] != 0:
